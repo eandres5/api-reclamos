@@ -59,9 +59,9 @@ class ClienteServiceImplTest {
             ClienteResponseDto resultado = clienteService.buscarPorIdentificacion("1712345678");
 
             assertThat(resultado).isNotNull();
-            assertThat(resultado.getIdentificacion()).isEqualTo("1712345678");
-            assertThat(resultado.getNombres()).isEqualTo("Juan Carlos");
-            assertThat(resultado.getApellidos()).isEqualTo("Pérez López");
+            assertThat(resultado.identificacion()).isEqualTo("1712345678");
+            assertThat(resultado.nombres()).isEqualTo("Juan Carlos");
+            assertThat(resultado.apellidos()).isEqualTo("Pérez López");
 
             verify(clienteRepository, times(1)).findByIdentificacion("1712345678");
         }

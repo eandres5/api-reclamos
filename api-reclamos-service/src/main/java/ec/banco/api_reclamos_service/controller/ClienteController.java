@@ -26,6 +26,12 @@ public class ClienteController {
 
     private final ClienteService clienteService;
 
+    /**
+     * Este metodo consulta la informacion de un cliente.
+     *
+     * @param identificacion numero de identificacion a buscar
+     * @return informacion de cliente
+     */
     @Operation(
             summary = "Consultar cliente por identificación",
             description = "Busca un cliente por su número de identificación (cédula). Retorna nombres y apellidos."

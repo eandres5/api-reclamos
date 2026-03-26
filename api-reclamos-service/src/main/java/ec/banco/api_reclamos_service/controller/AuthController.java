@@ -26,6 +26,12 @@ public class AuthController {
 
     private final AuthService authService;
 
+    /**
+     * Este metodo crea una sesion para el consumo de servicios del API RECLAMOS.
+     *
+     * @param request informacion de tipo DTO para crear la sesion
+     * @return autorizacion de sesion
+     */
     @Operation(
             summary = "Iniciar sesión",
             description = "Autentica al cliente con su identificación (cédula) y contraseña. Retorna un token JWT."
@@ -39,7 +45,7 @@ public class AuthController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@Valid @RequestBody LoginRequestDto request) {
+    public ResponseEntity<LoginResponseDto> login(final @Valid @RequestBody LoginRequestDto request) {
         LoginResponseDto response = authService.login(request);
         return ResponseEntity.ok(response);
     }

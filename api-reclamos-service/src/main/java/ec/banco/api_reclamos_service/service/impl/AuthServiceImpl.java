@@ -25,8 +25,14 @@ public class AuthServiceImpl implements AuthService {
     private final JwtService jwtService;
     private final ClienteRepository clienteRepository;
 
+    /**
+     * Este metodo genera un acceso para el consumo de servicios.
+     *
+     * @param request DTO con informacion para generar el login
+     * @return autoizacion de tipo token
+     */
     @Override
-    public LoginResponseDto login(LoginRequestDto request) {
+    public LoginResponseDto login(final LoginRequestDto request) {
         log.info("Intento de login para cliente: {}", request.getIdentificacion());
 
         authenticationManager.authenticate(
@@ -42,8 +48,6 @@ public class AuthServiceImpl implements AuthService {
 
         UserDetails userDetails = userDetailsService.loadUserByUsername(request.getIdentificacion());
         String token = jwtService.generateToken(userDetails);
-
-        log.info("Login exitoso para: {} {}", cliente.getNombres(), cliente.getApellidos());
 
         return LoginResponseDto.builder()
                 .token(token)

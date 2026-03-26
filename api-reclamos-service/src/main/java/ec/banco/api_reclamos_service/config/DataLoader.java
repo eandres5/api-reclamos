@@ -8,11 +8,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-/**
- * Carga datos iniciales al arrancar la aplicación.
- * Solo se ejecuta con el perfil "dev" o si las tablas están vacías.
- * Útil para pruebas sin necesidad de ejecutar el script SQL manualmente.
- */
+
 @Slf4j
 @Component
 @RequiredArgsConstructor
@@ -22,7 +18,7 @@ public class DataLoader implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public void run(String... args) {
+    public void run(final String... args) {
         cargarClientes();
     }
 

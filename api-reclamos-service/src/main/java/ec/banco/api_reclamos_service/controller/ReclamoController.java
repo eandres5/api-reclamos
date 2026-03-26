@@ -27,6 +27,12 @@ public class ReclamoController {
 
     private final ReclamoService reclamoService;
 
+    /**
+     * Este metodo crea un registro de reclamos.
+     *
+     * @param request informacion de reclamo en DTO
+     * @return mensaje de respuesta exitoso
+     */
     @Operation(
             summary = "Registrar un nuevo reclamo",
             description = "Crea un reclamo asociado a un cliente existente. Requiere identificación, tipo y detalle."
@@ -41,8 +47,7 @@ public class ReclamoController {
             @ApiResponse(responseCode = "401", description = "No autenticado")
     })
     @PostMapping
-    public ResponseEntity<ReclamoResponseDto> registrar(
-            @Valid @RequestBody ReclamoRequestDto request) {
+    public ResponseEntity<ReclamoResponseDto> registrar(final @Valid @RequestBody ReclamoRequestDto request) {
         ReclamoResponseDto response = reclamoService.registrarReclamo(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

@@ -21,20 +21,26 @@ public class ReclamoServiceImpl implements ReclamoService {
     private final ReclamoRepository reclamoRepository;
     private final ClienteRepository clienteRepository;
 
+    /**
+     * Este metodo registra un reclamo por cliente.
+     *
+     * @param request DTO con informacion del reclamo
+     * @return DTO con mensaje de exito
+     */
     @Override
     @Transactional
-    public ReclamoResponseDto registrarReclamo(ReclamoRequestDto request) {
-        log.info("Registrando reclamo para cliente: {}", request.getIdentificacionCliente());
+    public ReclamoResponseDto registrarReclamo(final ReclamoRequestDto request) {
+        log.info("Registrando reclamo para cliente: {}", request.identificacionCliente());
 
         Cliente cliente = clienteRepository
-                .findByIdentificacion(request.getIdentificacionCliente())
+                .findByIdentificacion(request.identificacionCliente())
                 .orElseThrow(() -> new ResourceNotFoundException(
-                        "Cliente", "identificación", request.getIdentificacionCliente()));
+                        "Cliente", "identificación", request.identificacionCliente()));
 
         Reclamo reclamo = Reclamo.builder()
                 .cliente(cliente)
-                .tipoReclamo(request.getTipoReclamo())
-                .detalleReclamo(request.getDetalleReclamo())
+                .tipoReclamo(request.tipoReclamo())
+                .detalleReclamo(request.detalleReclamo())
                 .build();
 
         Reclamo reclamoGuardado = reclamoRepository.save(reclamo);

@@ -38,16 +38,12 @@ class ReclamosIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private ClienteRepository clienteRepository;
-
     @Autowired
     private ReclamoRepository reclamoRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -143,10 +139,12 @@ class ReclamosIntegrationTest {
         @Test
         @DisplayName("Debe retornar 201 cuando el reclamo se registra exitosamente")
         void debeRetornar201CuandoReclamoExitoso() throws Exception {
-            ReclamoRequestDto request = new ReclamoRequestDto();
-            request.setIdentificacionCliente("1712345678");
-            request.setTipoReclamo(TipoReclamo.TARJETAS_CREDITO);
-            request.setDetalleReclamo("Cobro duplicado en mi tarjeta de crédito por $45.50");
+
+            ReclamoRequestDto request = new ReclamoRequestDto(
+                    "1712345678",
+                    TipoReclamo.TARJETAS_CREDITO,
+                    "Cobro duplicado en mi tarjeta de crédito por $45.50");
+
 
             mockMvc.perform(post("/v1/api/reclamos")
                             .header("Authorization", "Bearer " + jwtToken)
@@ -165,10 +163,10 @@ class ReclamosIntegrationTest {
         @Test
         @DisplayName("Debe retornar 201 con tipo TRANSFERENCIAS")
         void debeRegistrarConTipoTransferencias() throws Exception {
-            ReclamoRequestDto request = new ReclamoRequestDto();
-            request.setIdentificacionCliente("1798765432");
-            request.setTipoReclamo(TipoReclamo.TRANSFERENCIAS);
-            request.setDetalleReclamo("Transferencia de $200 no reflejada en cuenta destino");
+            ReclamoRequestDto request = new ReclamoRequestDto(
+                    "1798765432",
+                    TipoReclamo.TRANSFERENCIAS,
+                    "Transferencia de $200 no reflejada en cuenta destino");
 
             mockMvc.perform(post("/v1/api/reclamos")
                             .header("Authorization", "Bearer " + jwtToken)
@@ -182,10 +180,10 @@ class ReclamosIntegrationTest {
         @Test
         @DisplayName("Debe retornar 201 con tipo PAGO_SERVICIOS")
         void debeRegistrarConTipoPagoServicios() throws Exception {
-            ReclamoRequestDto request = new ReclamoRequestDto();
-            request.setIdentificacionCliente("1712345678");
-            request.setTipoReclamo(TipoReclamo.PAGO_SERVICIOS);
-            request.setDetalleReclamo("Pago de servicio eléctrico no fue procesado correctamente");
+            ReclamoRequestDto request = new ReclamoRequestDto(
+                    "1712345678",
+                    TipoReclamo.PAGO_SERVICIOS,
+                    "Pago de servicio eléctrico no fue procesado correctamente");
 
             mockMvc.perform(post("/v1/api/reclamos")
                             .header("Authorization", "Bearer " + jwtToken)
@@ -198,10 +196,10 @@ class ReclamosIntegrationTest {
         @Test
         @DisplayName("Debe retornar 404 cuando el cliente del reclamo no existe")
         void debeRetornar404ConClienteInexistente() throws Exception {
-            ReclamoRequestDto request = new ReclamoRequestDto();
-            request.setIdentificacionCliente("9999999999");
-            request.setTipoReclamo(TipoReclamo.TARJETAS_CREDITO);
-            request.setDetalleReclamo("Reclamo con cliente inexistente para prueba");
+            ReclamoRequestDto request = new ReclamoRequestDto(
+                    "9999999999",
+                    TipoReclamo.TARJETAS_CREDITO,
+                    "Reclamo con cliente inexistente para prueba");
 
             mockMvc.perform(post("/v1/api/reclamos")
                             .header("Authorization", "Bearer " + jwtToken)
@@ -213,10 +211,7 @@ class ReclamosIntegrationTest {
         @Test
         @DisplayName("Debe retornar 400 cuando faltan campos obligatorios")
         void debeRetornar400CuandoFaltanCampos() throws Exception {
-            ReclamoRequestDto request = new ReclamoRequestDto();
-            request.setIdentificacionCliente("");
-            request.setTipoReclamo(null);
-            request.setDetalleReclamo("");
+            ReclamoRequestDto request = new ReclamoRequestDto("", null, "");
 
             mockMvc.perform(post("/v1/api/reclamos")
                             .header("Authorization", "Bearer " + jwtToken)
@@ -229,10 +224,10 @@ class ReclamosIntegrationTest {
         @Test
         @DisplayName("Debe retornar 400 cuando el detalle es muy corto")
         void debeRetornar400CuandoDetalleEsMuyCorto() throws Exception {
-            ReclamoRequestDto request = new ReclamoRequestDto();
-            request.setIdentificacionCliente("1712345678");
-            request.setTipoReclamo(TipoReclamo.TARJETAS_CREDITO);
-            request.setDetalleReclamo("Corto");
+            ReclamoRequestDto request = new ReclamoRequestDto(
+                    "1712345678",
+                    TipoReclamo.TARJETAS_CREDITO,
+                    "Corto");
 
             mockMvc.perform(post("/v1/api/reclamos")
                             .header("Authorization", "Bearer " + jwtToken)
@@ -257,10 +252,10 @@ class ReclamosIntegrationTest {
                     .andExpect(status().isOk())
                     .andExpect(jsonPath("$.nombres").value("María Elena"));
 
-            ReclamoRequestDto reclamo = new ReclamoRequestDto();
-            reclamo.setIdentificacionCliente("1798765432");
-            reclamo.setTipoReclamo(TipoReclamo.TRANSFERENCIAS);
-            reclamo.setDetalleReclamo("Transferencia de $500 realizada pero no recibida en cuenta destino");
+            ReclamoRequestDto reclamo = new ReclamoRequestDto(
+                    "1798765432",
+                    TipoReclamo.TRANSFERENCIAS,
+                    "Transferencia de $500 realizada pero no recibida en cuenta destino");
 
             mockMvc.perform(post("/v1/api/reclamos")
                             .header("Authorization", "Bearer " + token)

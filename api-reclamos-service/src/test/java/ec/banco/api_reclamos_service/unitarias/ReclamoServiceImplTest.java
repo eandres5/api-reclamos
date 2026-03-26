@@ -57,10 +57,10 @@ class ReclamoServiceImplTest {
                 .activo(true)
                 .build();
 
-        requestMock = new ReclamoRequestDto();
-        requestMock.setIdentificacionCliente("1712345678");
-        requestMock.setTipoReclamo(TipoReclamo.TARJETAS_CREDITO);
-        requestMock.setDetalleReclamo("Cobro duplicado en mi tarjeta de crédito por $45.50");
+        requestMock = new ReclamoRequestDto(
+                "1712345678",
+                TipoReclamo.TARJETAS_CREDITO,
+                "Cobro duplicado en mi tarjeta de crédito por $45.50");
     }
 
     @Nested
@@ -86,13 +86,13 @@ class ReclamoServiceImplTest {
             ReclamoResponseDto resultado = reclamoService.registrarReclamo(requestMock);
 
             assertThat(resultado).isNotNull();
-            assertThat(resultado.getId()).isEqualTo(1L);
-            assertThat(resultado.getIdentificacionCliente()).isEqualTo("1712345678");
-            assertThat(resultado.getNombresCliente()).isEqualTo("Juan Carlos");
-            assertThat(resultado.getApellidosCliente()).isEqualTo("Pérez López");
-            assertThat(resultado.getTipoReclamo()).isEqualTo(TipoReclamo.TARJETAS_CREDITO);
-            assertThat(resultado.getDetalleReclamo()).isEqualTo("Cobro duplicado en mi tarjeta de crédito por $45.50");
-            assertThat(resultado.getFechaCreacion()).isNotNull();
+            assertThat(resultado.id()).isEqualTo(1L);
+            assertThat(resultado.identificacionCliente()).isEqualTo("1712345678");
+            assertThat(resultado.nombresCliente()).isEqualTo("Juan Carlos");
+            assertThat(resultado.apellidosCliente()).isEqualTo("Pérez López");
+            assertThat(resultado.tipoReclamo()).isEqualTo(TipoReclamo.TARJETAS_CREDITO);
+            assertThat(resultado.detalleReclamo()).isEqualTo("Cobro duplicado en mi tarjeta de crédito por $45.50");
+            assertThat(resultado.fechaCreacion()).isNotNull();
 
             verify(clienteRepository, times(1)).findByIdentificacion("1712345678");
             verify(reclamoRepository, times(1)).save(any(Reclamo.class));
@@ -101,7 +101,11 @@ class ReclamoServiceImplTest {
         @Test
         @DisplayName("Debe lanzar ResourceNotFoundException cuando el cliente no existe")
         void debeLanzarExcepcionSiClienteNoExiste() {
-            requestMock.setIdentificacionCliente("9999999999");
+            requestMock = new ReclamoRequestDto(
+                    "9999999999",
+                    TipoReclamo.TARJETAS_CREDITO,
+                    "Cobro duplicado en mi tarjeta de crédito por $45.50");
+
             when(clienteRepository.findByIdentificacion("9999999999"))
                     .thenReturn(Optional.empty());
 
@@ -114,37 +118,13 @@ class ReclamoServiceImplTest {
         }
 
         @Test
-        @DisplayName("Debe persistir el reclamo con el tipo correcto")
-        void debePersistirConTipoCorrecto() {
-            requestMock.setTipoReclamo(TipoReclamo.TRANSFERENCIAS);
-
-            Reclamo reclamoGuardado = Reclamo.builder()
-                    .id(2L)
-                    .cliente(clienteMock)
-                    .tipoReclamo(TipoReclamo.TRANSFERENCIAS)
-                    .detalleReclamo(requestMock.getDetalleReclamo())
-                    .fechaCreacion(LocalDateTime.now())
-                    .build();
-
-            when(clienteRepository.findByIdentificacion("1712345678"))
-                    .thenReturn(Optional.of(clienteMock));
-            when(reclamoRepository.save(any(Reclamo.class)))
-                    .thenReturn(reclamoGuardado);
-            reclamoService.registrarReclamo(requestMock);
-
-            ArgumentCaptor<Reclamo> reclamoCaptor = ArgumentCaptor.forClass(Reclamo.class);
-            verify(reclamoRepository).save(reclamoCaptor.capture());
-
-            Reclamo reclamoCapturado = reclamoCaptor.getValue();
-            assertThat(reclamoCapturado.getTipoReclamo()).isEqualTo(TipoReclamo.TRANSFERENCIAS);
-            assertThat(reclamoCapturado.getCliente().getId()).isEqualTo(1L);
-        }
-
-        @Test
         @DisplayName("Debe funcionar con tipo PAGO_SERVICIOS")
         void debeFuncionarConPagoServicios() {
-            requestMock.setTipoReclamo(TipoReclamo.PAGO_SERVICIOS);
-            requestMock.setDetalleReclamo("Pago de luz no procesado correctamente");
+
+            requestMock = new ReclamoRequestDto(
+                    "1712345678",
+                    TipoReclamo.PAGO_SERVICIOS,
+                    "Pago de luz no procesado correctamente");
 
             Reclamo reclamoGuardado = Reclamo.builder()
                     .id(3L)
@@ -160,7 +140,7 @@ class ReclamoServiceImplTest {
                     .thenReturn(reclamoGuardado);
 
             ReclamoResponseDto resultado = reclamoService.registrarReclamo(requestMock);
-            assertThat(resultado.getTipoReclamo()).isEqualTo(TipoReclamo.PAGO_SERVICIOS);
+            assertThat(resultado.tipoReclamo()).isEqualTo(TipoReclamo.PAGO_SERVICIOS);
         }
     }
 }

@@ -17,9 +17,15 @@ public class ClienteServiceImpl implements ClienteService {
 
     private final ClienteRepository clienteRepository;
 
+    /**
+     * Este metodo consulta un cliente por identifiacion.
+     *
+     * @param identificacion numero de indentificacion como filtro
+     * @return informacion de cliente como DTO en caso de existir
+     */
     @Override
     @Transactional
-    public ClienteResponseDto buscarPorIdentificacion(String identificacion) {
+    public ClienteResponseDto buscarPorIdentificacion(final String identificacion) {
         log.info("Consultando cliente con identificación: {}", identificacion);
 
         Cliente cliente = clienteRepository.findByIdentificacion(identificacion)

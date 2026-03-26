@@ -33,13 +33,10 @@ class AuthControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
-
     @Autowired
     private ObjectMapper objectMapper;
-
     @Autowired
     private ClienteRepository clienteRepository;
-
     @Autowired
     private PasswordEncoder passwordEncoder;
 
