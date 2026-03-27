@@ -1,4 +1,4 @@
-# 🏦 Banco Internacional - API Reclamos (Backend)
+# API Reclamos
 
 API REST para la gestión de reclamos de clientes del Banco Internacional. Arquitectura modular con seguridad JWT, Spring Boot 3 y PostgreSQL.
 
