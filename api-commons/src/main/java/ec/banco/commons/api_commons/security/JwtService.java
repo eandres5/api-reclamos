@@ -4,6 +4,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -20,24 +21,36 @@ public class JwtService {
 
     @Value("${app.jwt.secret}")
     private String secretKey;
-
+    @Getter
     @Value("${app.jwt.expiration-ms}")
     private long expirationMs;
 
-    public String extractUsername(String token) {
+    /**
+     * Extrae el username (subject) del token.
+     */
+    public String extractUsername(final String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+    /**
+     * Extrae el username (subject) del token.
+     */
+    public <T> T extractClaim(final String token, final Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    public String generateToken(UserDetails userDetails) {
+    /**
+     * Genera un token sin claims adicionales.
+     */
+    public String generateToken(final UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
 
-    public String generateToken(Map<String, Object> extraClaims, UserDetails userDetails) {
+    /**
+     * Genera un token sin claims adicionales.
+     */
+    public String generateToken(final Map<String, Object> extraClaims, final UserDetails userDetails) {
         return Jwts.builder()
                 .claims(extraClaims)
                 .subject(userDetails.getUsername())
@@ -47,13 +60,15 @@ public class JwtService {
                 .compact();
     }
 
-    public boolean isTokenValid(String token, UserDetails userDetails) {
+    /**
+     * Valida el token.
+     * @param token token a validar
+     * @param userDetails detalles del usuario
+     * @return valor true o false
+     */
+    public boolean isTokenValid(final String token, final UserDetails userDetails) {
         final String username = extractUsername(token);
         return username.equals(userDetails.getUsername()) && !isTokenExpired(token);
-    }
-
-    public long getExpirationMs() {
-        return expirationMs;
     }
 
     private boolean isTokenExpired(String token) {

@@ -16,6 +16,11 @@ import java.util.List;
 @Configuration
 public class OpenApiConfig {
 
+    /**
+     * Este metodo define los endpoints en documentacion del API RECLAMOS.
+     *
+     * @return estructura tipo string con toda la informacion del api
+     */
     @Bean
     public OpenAPI customOpenAPI() {
         final String securitySchemeName = "bearerAuth";
@@ -34,15 +39,10 @@ public class OpenApiConfig {
                                 **Autenticación:** Bearer Token (JWT)
                                 """)
                         .version("1.0.0")
-                        .contact(new Contact()
-                                .name("Banco Internacional - TI")
-                                .email("soporte@bancointernacional.ec"))
                         .license(new License()
-                                .name("Uso interno")
-                                .url("https://www.bancointernacional.ec")))
+                                .name("Uso interno")))
                 .servers(List.of(
-                        new Server().url("http://localhost:8080").description("Desarrollo"),
-                        new Server().url("https://api.bancointernacional.ec").description("Producción")))
+                        new Server().url("http://localhost:8080").description("Desarrollo")))
                 .addSecurityItem(new SecurityRequirement().addList(securitySchemeName))
                 .components(new Components()
                         .addSecuritySchemes(securitySchemeName,

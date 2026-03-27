@@ -25,6 +25,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
+    /**
+     * Metodo principal del filtro.
+     * <p>
+     * Se ejecuta en cada request HTTP.
+     */
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -34,7 +39,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String path = request.getServletPath();
 
-        // ✅ 1. Ignorar rutas públicas (CRÍTICO)
         if (isPublicEndpoint(path)) {
             filterChain.doFilter(request, response);
             return;
@@ -42,7 +46,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         final String authHeader = request.getHeader("Authorization");
 
-        // ✅ 2. Si no hay token → continuar sin romper
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
